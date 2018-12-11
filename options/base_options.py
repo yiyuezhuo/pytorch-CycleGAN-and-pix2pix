@@ -42,6 +42,12 @@ class BaseOptions():
         parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
         parser.add_argument('--suffix', default='', type=str, help='customized suffix: opt.name = opt.name + suffix: e.g., {model}_{netG}_size{loadSize}')
+        
+        parser.add_argument('--loadSize_B', type=int, default=0, help='scale images to this size')
+        parser.add_argument('--fineSize_B', type=int, default=0, help='then crop to this size')
+        parser.add_argument('--resize_or_crop_B', type=str, default='resize_and_crop', help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop|none]')
+        parser.add_argument('--no_flip_B', action='store_true', help='if specified, do not flip the images for data augmentation')
+
         self.initialized = True
         return parser
 

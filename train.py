@@ -22,6 +22,11 @@ if __name__ == '__main__':
         epoch_iter = 0
 
         for i, data in enumerate(dataset):
+            '''
+            import pdb
+            pdb.set_trace()
+            '''
+            
             iter_start_time = time.time()
             if total_steps % opt.print_freq == 0:
                 t_data = iter_start_time - iter_data_time
@@ -29,11 +34,19 @@ if __name__ == '__main__':
             total_steps += opt.batch_size
             epoch_iter += opt.batch_size
             model.set_input(data)
+            
+            '''
+            import pdb
+            pdb.set_trace()
+            ''' 
+            
             model.optimize_parameters()
 
             if total_steps % opt.display_freq == 0:
                 save_result = total_steps % opt.update_html_freq == 0
+                
                 visualizer.display_current_results(model.get_current_visuals(), epoch, save_result)
+
 
             if total_steps % opt.print_freq == 0:
                 losses = model.get_current_losses()

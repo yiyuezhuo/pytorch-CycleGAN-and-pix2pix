@@ -4,6 +4,8 @@ from data.image_folder import make_dataset
 from PIL import Image
 import random
 
+class FakeOpt:
+    pass
 
 class UnalignedDataset(BaseDataset):
     @staticmethod
@@ -23,7 +25,19 @@ class UnalignedDataset(BaseDataset):
         self.B_paths = sorted(self.B_paths)
         self.A_size = len(self.A_paths)
         self.B_size = len(self.B_paths)
+        
         self.transform = get_transform(opt)
+        
+        self.transformB = None
+        if opt.loadSize_B != 0:
+            optB = FakeOpt()
+            optB.loadSize = opt.loadSize_B
+            optB.fineSize = opt.fineSize_B
+            optB.resize_or_crop = opt.resize_or_crop_B
+            optB.no_flip = opt.no_flip_B
+            optB.isTrain = opt.isTrain
+            
+            self.transformB = get_transform(optB)
 
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]
@@ -36,7 +50,10 @@ class UnalignedDataset(BaseDataset):
         B_img = Image.open(B_path).convert('RGB')
 
         A = self.transform(A_img)
-        B = self.transform(B_img)
+        if self.transformB:
+            B = self.transformB(B_img)
+        else:
+            B = self.transform(B_img)
         if self.opt.direction == 'BtoA':
             input_nc = self.opt.output_nc
             output_nc = self.opt.input_nc
